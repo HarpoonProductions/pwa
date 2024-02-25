@@ -1,0 +1,16 @@
+{
+  "short_name": "Harpoon Productions",
+  "name": "Harpoon Productions PWA",
+  "icons": [
+    {
+      "src": "assets/FGpDs1A6YX/harpoon-icon-700x700.webp",
+      "type": "image/webp",
+      "sizes": "700x700"
+    }
+  ],
+  "start_url": "/pwa/",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/pwa/",
+  "theme_color": "#ffffff"
+}
