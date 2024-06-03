@@ -131,11 +131,11 @@
           installPromptEvent.userChoice.then((choiceResult) => {
             if (choiceResult.outcome === "accepted") {
               console.log("User accepted the A2HS prompt");
-              document.getElementById("installModal").classList.remove("show");
+              document.getElementById("installModal").remove();
             } else {
               console.log("User dismissed the A2HS prompt");
               document.getElementById("downloadButton").classList.add("show");
-              document.getElementById("installModal").classList.remove("show");
+              document.getElementById("installModal").remove();
             }
             installPromptEvent = null; // Reset the deferred prompt variable
           });
