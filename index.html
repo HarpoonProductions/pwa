@@ -71,7 +71,6 @@
         }
       }
       #downloadButton {
-        display: none;
         position: fixed;
         top: 20px;
         right: 20px;
@@ -81,9 +80,14 @@
         border-radius: 5px;
         padding: 10px 20px;
         cursor: pointer;
-        opacity: 0.5;
+        opacity: 0;
+        pointer-events: none;
         transition: opacity 0.3s;
         z-index: 1000;
+      }
+      #downloadButton.show {
+        opacity: 0.5;
+        pointer-events: all;
       }
       #downloadButton:hover {
         opacity: 1;
@@ -127,12 +131,13 @@
           installPromptEvent.userChoice.then((choiceResult) => {
             if (choiceResult.outcome === "accepted") {
               console.log("User accepted the A2HS prompt");
+              document.getElementById("installModal").classList.remove("show");
             } else {
               console.log("User dismissed the A2HS prompt");
-              document.getElementById("downloadButton").style.display = "block";
+              document.getElementById("downloadButton").classList.add("show");
+              document.getElementById("installModal").classList.remove("show");
             }
             installPromptEvent = null; // Reset the deferred prompt variable
-            document.getElementById("installModal").classList.remove("show");
           });
         }
 
