@@ -99,7 +99,10 @@
       document.addEventListener("DOMContentLoaded", function () {
         let installPromptEvent;
 
-        if (window.matchMedia("(display-mode: browser)").matches) {
+        if (
+          !window.matchMedia("(display-mode: standalone)").matches &&
+          !navigator.standalone
+        ) {
           // Listen for the beforeinstallprompt event only in browser mode
           window.addEventListener("beforeinstallprompt", (e) => {
             e.preventDefault(); // Prevent the default install prompt
