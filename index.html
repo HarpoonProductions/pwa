@@ -39,6 +39,7 @@
 
       .modal-text {
         margin: 0;
+        margin-top: 15px;
         font-size: 1.2em;
       }
 
@@ -99,8 +100,6 @@
             installPromptEvent = e; // Stash the event to trigger later
             showModal();
           });
-
-          document.getElementById("downloadButton").style.display = "block"; // Always display the download button when in browser mode
         }
 
         document
@@ -130,6 +129,7 @@
               console.log("User accepted the A2HS prompt");
             } else {
               console.log("User dismissed the A2HS prompt");
+              document.getElementById("downloadButton").style.display = "block";
             }
             installPromptEvent = null; // Reset the deferred prompt variable
             document.getElementById("installModal").classList.remove("show");

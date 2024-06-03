@@ -1,4 +1,4 @@
-const CACHE_NAME = "pwa-v1.1";
+const CACHE_NAME = "pwa-v1.2";
 const urlsToCache = [
   "/pwa/article/article.html",
   "/pwa/article/assets/9ZnpCEPpfk/harpoon-magazine-logo-1563x500.png",
