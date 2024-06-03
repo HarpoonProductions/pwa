@@ -7,6 +7,59 @@
       content="width=device-width,initial-scale=1.0,minimum-scale=1.0,viewport-fit=cover"
     />
     <title>HARPOON MAGAZINE</title>
+    <style>
+      #installModal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.5s;
+      }
+      #installModal.show {
+        display: flex;
+        opacity: 1;
+      }
+      #installModalContent {
+        background: #333;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        width: fit-content;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      }
+      #installModal p {
+        color: white;
+      }
+      #installLink {
+        color: #007bff;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      #downloadButton {
+        display: none;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: opacity 0.3s;
+      }
+      #downloadButton:hover {
+        opacity: 1;
+      }
+    </style>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         let installPromptEvent;
@@ -14,27 +67,54 @@
         window.addEventListener("beforeinstallprompt", (e) => {
           e.preventDefault(); // Prevent the default install prompt
           installPromptEvent = e; // Stash the event to trigger later
-          document.getElementById("installModal").style.display = "flex"; // Show the modal
+          showModal();
         });
+
+        document
+          .getElementById("installModal")
+          .addEventListener("click", function (event) {
+            if (event.target.id === "installModal") {
+              this.style.display = "none";
+            }
+          });
 
         document
           .getElementById("installLink")
           .addEventListener("click", function () {
             if (installPromptEvent) {
               installPromptEvent.prompt(); // Show the install prompt
-              installPromptEvent.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === "accepted") {
-                  console.log("User accepted the A2HS prompt");
-                } else {
-                  console.log("User dismissed the A2HS prompt");
-                }
-                installPromptEvent = null; // Reset the deferred prompt variable
-                document.getElementById("installModal").style.display = "none"; // Hide the modal
-              });
+              handleUserChoice();
+            }
+          });
+
+        function showModal() {
+          document.getElementById("installModal").classList.add("show");
+        }
+
+        function handleUserChoice() {
+          installPromptEvent.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === "accepted") {
+              console.log("User accepted the A2HS prompt");
+            } else {
+              console.log("User dismissed the A2HS prompt");
+              document.getElementById("downloadButton").style.display = "block";
+            }
+            installPromptEvent = null; // Reset the deferred prompt variable
+            document.getElementById("installModal").classList.remove("show");
+          });
+        }
+
+        document
+          .getElementById("downloadButton")
+          .addEventListener("click", function () {
+            if (installPromptEvent) {
+              installPromptEvent.prompt(); // Show the install prompt again
+              handleUserChoice();
             }
           });
       });
     </script>
+
     <link rel="stylesheet" href="./static/styles.275364.min.css" />
     <script></script>
     <style class="Theme-Styles" type="text/css">
@@ -5590,42 +5670,15 @@
   </head>
 
   <body class="theme-base">
-    <div
-      id="installModal"
-      style="
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        justify-content: center;
-        align-items: center;
-        display: flex;
-        z-index: 1000;
-      "
-    >
-      <div
-        style="
-          background: #333;
-          padding: 20px;
-          border-radius: 10px;
-          text-align: center;
-        "
-      >
+    <div id="installModal">
+      <div id="installModalContent" onclick="event.stopPropagation()">
         <p>
           This app can be downloaded to your phone for offline reading. Click
-          <span
-            id="installLink"
-            style="text-decoration: underline; cursor: pointer"
-            >HERE</span
-          >
-          to add to your homescreen.
+          <span id="installLink">HERE</span> to add to your homescreen.
         </p>
       </div>
     </div>
+    <button id="downloadButton">Install App</button>
     <div
       class="Core--rootElement FullSize--fullWidth PositionSticky Project-HeaderContainer Levels--header HeaderBarContainer Theme-HeaderContainer Theme-HeaderContainer--navigable Theme-HeaderContainer--hidden"
       data-fixed-story-element="true"
