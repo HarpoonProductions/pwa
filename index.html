@@ -8,39 +8,48 @@
     />
     <title>HARPOON MAGAZINE</title>
     <style>
-      #installModal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        opacity: 0;
-        transition: opacity 0.5s;
-      }
-      #installModal.show {
-        display: flex;
-        opacity: 1;
-      }
       #installModalContent {
-        background: #333;
+        background-color: #007bff;
+        color: white;
         padding: 20px;
         border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         text-align: center;
-        width: fit-content;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        animation: fadeIn 1s ease-in-out;
+        font-family: Arial, Helvetica, sans-serif;
       }
-      #installModal p {
-        color: white;
+
+      .modal-text {
+        margin: 0;
+        font-size: 1.2em;
       }
+
+      .modal-button {
+        margin-top: 15px;
+        font-size: 1.2em;
+      }
+
       #installLink {
-        color: #007bff;
-        text-decoration: underline;
+        color: #ffdd57;
         cursor: pointer;
+        text-decoration: underline;
+        font-weight: bold;
+        transition: color 0.3s ease;
+      }
+
+      #installLink:hover {
+        color: #ffd700;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
       }
       #downloadButton {
         display: none;
@@ -55,6 +64,7 @@
         cursor: pointer;
         opacity: 0.5;
         transition: opacity 0.3s;
+        z-index: 1000;
       }
       #downloadButton:hover {
         opacity: 1;
@@ -64,11 +74,16 @@
       document.addEventListener("DOMContentLoaded", function () {
         let installPromptEvent;
 
-        window.addEventListener("beforeinstallprompt", (e) => {
-          e.preventDefault(); // Prevent the default install prompt
-          installPromptEvent = e; // Stash the event to trigger later
-          showModal();
-        });
+        if (window.matchMedia("(display-mode: browser)").matches) {
+          // Listen for the beforeinstallprompt event only in browser mode
+          window.addEventListener("beforeinstallprompt", (e) => {
+            e.preventDefault(); // Prevent the default install prompt
+            installPromptEvent = e; // Stash the event to trigger later
+            showModal();
+          });
+
+          document.getElementById("downloadButton").style.display = "block"; // Always display the download button when in browser mode
+        }
 
         document
           .getElementById("installModal")
@@ -97,7 +112,6 @@
               console.log("User accepted the A2HS prompt");
             } else {
               console.log("User dismissed the A2HS prompt");
-              document.getElementById("downloadButton").style.display = "block";
             }
             installPromptEvent = null; // Reset the deferred prompt variable
             document.getElementById("installModal").classList.remove("show");
@@ -5670,13 +5684,13 @@
   </head>
 
   <body class="theme-base">
-    <div id="installModal">
-      <div id="installModalContent" onclick="event.stopPropagation()">
-        <p>
-          This app can be downloaded to your phone for offline reading. Click
-          <span id="installLink">HERE</span> to add to your homescreen.
-        </p>
-      </div>
+    <div id="installModalContent" onclick="event.stopPropagation()">
+      <p class="modal-text">
+        This app can be downloaded to your phone for offline reading.
+      </p>
+      <p class="modal-button">
+        Click <span id="installLink">HERE</span> to add to your homescreen.
+      </p>
     </div>
     <button id="downloadButton">Install App</button>
     <div
