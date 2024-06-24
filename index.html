@@ -97,64 +97,73 @@
     </style>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        let installPromptEvent;
-
-        if (
-          !window.matchMedia("(display-mode: standalone)").matches &&
-          !navigator.standalone
-        ) {
-          // Listen for the beforeinstallprompt event only in browser mode
-          window.addEventListener("beforeinstallprompt", (e) => {
-            e.preventDefault(); // Prevent the default install prompt
-            installPromptEvent = e; // Stash the event to trigger later
-            showModal();
-          });
+        function isMobileDevice() {
+          return /Mobi|Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop|Mobile/i.test(
+            navigator.userAgent
+          );
         }
 
-        document
-          .getElementById("installModal")
-          .addEventListener("click", function (event) {
-            if (event.target.id === "installModal") {
-              this.style.display = "none";
-              document.getElementById("downloadButton").classList.add("show");
-            }
-          });
+        // Only run the script if the user is on a mobile device
+        if (isMobileDevice()) {
+          let installPromptEvent;
 
-        document
-          .getElementById("installLink")
-          .addEventListener("click", function () {
-            if (installPromptEvent) {
-              installPromptEvent.prompt(); // Show the install prompt
-              handleUserChoice();
-            }
-          });
+          if (
+            !window.matchMedia("(display-mode: standalone)").matches &&
+            !navigator.standalone
+          ) {
+            // Listen for the beforeinstallprompt event only in browser mode
+            window.addEventListener("beforeinstallprompt", (e) => {
+              e.preventDefault(); // Prevent the default install prompt
+              installPromptEvent = e; // Stash the event to trigger later
+              showModal();
+            });
+          }
 
-        function showModal() {
-          document.getElementById("installModal").classList.add("show");
+          document
+            .getElementById("installModal")
+            .addEventListener("click", function (event) {
+              if (event.target.id === "installModal") {
+                this.style.display = "none";
+                document.getElementById("downloadButton").classList.add("show");
+              }
+            });
+
+          document
+            .getElementById("installLink")
+            .addEventListener("click", function () {
+              if (installPromptEvent) {
+                installPromptEvent.prompt(); // Show the install prompt
+                handleUserChoice();
+              }
+            });
+
+          function showModal() {
+            document.getElementById("installModal").classList.add("show");
+          }
+
+          function handleUserChoice() {
+            installPromptEvent.userChoice.then((choiceResult) => {
+              if (choiceResult.outcome === "accepted") {
+                console.log("User accepted the A2HS prompt");
+                document.getElementById("installModal").remove();
+              } else {
+                console.log("User dismissed the A2HS prompt");
+                document.getElementById("downloadButton").classList.add("show");
+                document.getElementById("installModal").remove();
+              }
+              installPromptEvent = null; // Reset the deferred prompt variable
+            });
+          }
+
+          document
+            .getElementById("downloadButton")
+            .addEventListener("click", function () {
+              if (installPromptEvent) {
+                installPromptEvent.prompt(); // Show the install prompt again
+                handleUserChoice();
+              }
+            });
         }
-
-        function handleUserChoice() {
-          installPromptEvent.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === "accepted") {
-              console.log("User accepted the A2HS prompt");
-              document.getElementById("installModal").remove();
-            } else {
-              console.log("User dismissed the A2HS prompt");
-              document.getElementById("downloadButton").classList.add("show");
-              document.getElementById("installModal").remove();
-            }
-            installPromptEvent = null; // Reset the deferred prompt variable
-          });
-        }
-
-        document
-          .getElementById("downloadButton")
-          .addEventListener("click", function () {
-            if (installPromptEvent) {
-              installPromptEvent.prompt(); // Show the install prompt again
-              handleUserChoice();
-            }
-          });
       });
     </script>
 
